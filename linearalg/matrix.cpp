@@ -14,17 +14,37 @@ int cols;
 matrix::matrix(int r, int c) {
     rows = r;
     cols = c;
-    elements = static_cast<double **>(malloc(rows * sizeof(double *)));
-    for (int i = 0; i < rows; i++) {
-        elements[i] = static_cast<double *>(malloc(cols * sizeof(double *)));
+    elements = m_allocate(r, c);
+}
+void matrix::resize(int r, int c) {
+    if (rows * cols != r * c)
+        exit(-1);
+    double** newEls = m_allocate(r, c);
+    // Go through each element and place into new matrix
+    int rCtr = -1;
+    int newRCtr = -1;
+    for (int i = 0; i < rows * cols; i++) {
+        if (i % c == 0)
+            newRCtr++;
+        if (i % cols == 0)
+            rCtr++;
+        newEls[newRCtr][i % c] = elements[rCtr][i % cols];
     }
+    m_free();
+
+    rows = r;
+    cols = c;
+    elements = newEls;
 }
-
-matrix matrix::transpose() {
-
+void matrix::transpose() {
+    resize(cols, rows);
 }
-matrix matrix::resize() {
-
+double** matrix::m_allocate(int r, int c) {
+    double** els = static_cast<double **>(malloc(r * sizeof(double *)));
+    for (int i = 0; i < r; i++) {
+        els[i] = static_cast<double *>(malloc(c * sizeof(double *)));
+    }
+    return els;
 }
 void matrix::m_free() {
     for (int i = 0; i < rows; i++) {

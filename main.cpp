@@ -4,7 +4,8 @@
 #include "linearalg/ops.h"
 
 int main() {
-    matrix m = matrix(2, 2);
+    matrix m = matrix(2, 1);
+    m.transpose();
     m.print();
     return 0;
 }
