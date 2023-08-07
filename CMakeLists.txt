@@ -7,4 +7,6 @@ add_executable(weegrad main.cpp
         linearalg/matrix.cpp
         linearalg/matrix.h
         linearalg/ops.cpp
-        linearalg/ops.h)
+        linearalg/ops.h
+        nn.cpp
+        nn.h)
