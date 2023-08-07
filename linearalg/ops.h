@@ -10,6 +10,8 @@
 
 class ops {
     public:
+        int rows;
+        int cols;
         static matrix multiply(matrix m1, matrix m2);
 };
 

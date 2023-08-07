@@ -10,11 +10,15 @@ class matrix {
     public:
         matrix(int rows, int cols);
 
-    matrix transpose();
+        matrix transpose();
 
-    matrix resize();
+        matrix resize();
 
-    void free();
+        void m_free();
+
+        void print();
+
+        void randomize();
 };
 
 
