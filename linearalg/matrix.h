@@ -8,6 +8,10 @@
 
 class matrix {
     public:
+        int rows;
+        int cols;
+        double** elements;
+
         matrix(int rows, int cols);
 
         void transpose();
