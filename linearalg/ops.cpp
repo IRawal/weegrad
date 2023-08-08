@@ -13,18 +13,15 @@ matrix ops::multiply(matrix m1, matrix m2) {
         printf("invalid dimensions\n");
         exit(-1);
     }
+    matrix product = matrix(m1.rows, m2.cols);
 
-    //allocating the memory for the new matrix
-    matrix product = matrix(m1.cols, m2.rows);
-
-    //doing the actual multiplication
-    int m1rowc, m2colc, counter, cellsum = 0;
-    for (m1rowc = 0; m1rowc < product.rows; ++m1rowc) {
-        for (m2colc = 0; m2colc < product.cols; ++m2colc) {
-            for (counter = 0; counter < m1.rows; ++counter) {
-                cellsum += m1.elements[m1rowc][counter] * m2.elements[counter][m2colc];
+    for (int i = 0; i < m1.rows; i++) {
+        for (int j = 0; j < m2.cols; j++) {
+            double n = 0;
+            for (int k = 0; k < m1.cols; k++) {
+                n += m1.elements[i][k] * m2.elements[k][j];
             }
-            product.elements[m1rowc][m2colc] = cellsum;
+            product.elements[j][i] = n;
         }
     }
     return product;
