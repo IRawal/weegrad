@@ -21,7 +21,7 @@ matrix ops::multiply(matrix m1, matrix m2) {
             for (int k = 0; k < m1.cols; k++) {
                 n += m1.elements[i][k] * m2.elements[k][j];
             }
-            product.elements[j][i] = n;
+            product.elements[i][j] = n;
         }
     }
     return product;

@@ -6,9 +6,12 @@
 #define WEEGRAD_NN_H
 
 
-class nn {
+#include "linearalg/matrix.h"
 
-    nn(int inRows, int inCols, int hiddenSize, int layers, int outRows, int outCols);
+class nn {
+    public:
+        nn(matrix *layers, int netDepth);
+        matrix forward(matrix in);
 };
 
 

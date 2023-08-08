@@ -25,6 +25,8 @@ class matrix {
         void randomize();
 
         double** m_allocate(int r, int c);
+
+        void broadcast(double (*fn)(double));
 };
 
 

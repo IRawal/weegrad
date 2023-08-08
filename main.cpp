@@ -2,20 +2,23 @@
 
 #include "linearalg/matrix.h"
 #include "linearalg/ops.h"
+#include "nn.h"
 
 int main() {
-    matrix m1 = matrix(2, 2);
 
-    m1.elements[0][0] = 1;
-    m1.elements[0][1] = 1;
-    m1.elements[1][1] = 1;
+        int depth = 2;
+        matrix* layers = static_cast<matrix*>(malloc(sizeof(matrix) * depth));
 
+        layers[0] = matrix(2, 2);
+        layers[1] = matrix(2, 1);
 
-    matrix m2 = matrix(2, 2);
+        nn net = nn(layers, depth);
+        matrix in = matrix(1, 2);
+        in.randomize();
+        net.forward(in).print();
 
-    m2.elements[0][0] = 1;
-    m2.elements[1][0] = 1;
-
-    ops::multiply(m1, m2).print();
+//    matrix m1 = matrix(1, 2);
+//    matrix m2 = matrix(2, 2);
+//    ops::multiply(m1, m2).print();
     return 0;
 }

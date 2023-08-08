@@ -68,3 +68,10 @@ void matrix::randomize() {
         }
     }
 }
+void matrix::broadcast(double (*fn)(double)) {
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            elements[i][j] = fn(elements[i][j]);
+        }
+    }
+}

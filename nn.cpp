@@ -4,20 +4,35 @@
 
 #include "nn.h"
 #include "linearalg/matrix.h"
+#include "linearalg/ops.h"
 
 #include <cstdlib>
 
-matrix* layers;
+matrix* net;
+int depth;
 
-nn::nn(int inRows, int inCols, int hiddenSize, int hiddenLayers, int outRows, int outCols) {
-    int totalLayers = hiddenLayers + 2;
-    // Expand input matrix to be square with size of hidden
-    layers = static_cast<matrix*>(malloc(sizeof(matrix*) * totalLayers));
-    layers[0] = matrix(inCols, totalLayers);
-
-    for (int i = 1; i < hiddenLayers + 1; i++) {
-        layers[i] = matrix(hiddenSize, hiddenSize);
+nn::nn(matrix* layers, int netDepth) {
+    net = layers;
+    depth = netDepth;
+    for (int i = 0; i < depth; i++) {
+        layers[i].randomize();
     }
-
-    layers[totalLayers - 1] = matrix(hiddenSize, 1);
 }
+double relu(double d) {
+    if (d < 0)
+        return 0;
+    else
+        return d;
+}
+matrix nn::forward(matrix in) {
+    matrix tmp = ops::multiply(in, net[0]);
+    // Hidden layers
+    for (int i = 1; i < depth - 1; i++) {
+        tmp = ops::multiply(tmp, net[i]);
+        tmp.broadcast(&relu);
+    }
+    // Output
+    tmp = ops::multiply(tmp, net[depth - 1]);
+    return tmp;
+}
+
