@@ -8,5 +8,9 @@ add_executable(weegrad main.cpp
         linearalg/matrix.h
         linearalg/ops.cpp
         linearalg/ops.h
-        nn.cpp
-        nn.h)
+        net/nn.cpp
+        net/nn.h
+        net/dense.cpp
+        net/dense.h
+        tests/tests.cpp
+        tests/tests.h)

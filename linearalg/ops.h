@@ -12,7 +12,8 @@ class ops {
     public:
         int rows;
         int cols;
-        static matrix multiply(matrix m1, matrix m2);
+        static matrix multiply(matrix *m1, matrix *m2);
+        static matrix add(matrix *m1, matrix *m2);
 };
 
 
