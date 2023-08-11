@@ -4,16 +4,16 @@
 
 #include <cstdlib>
 #include <cstdio>
-#include "ops.h"
-#include "matrix.h"
+#include "Ops.h"
+#include "Matrix.h"
 
-matrix ops::multiply(matrix *m1, matrix *m2) {
+Matrix Ops::multiply(Matrix *m1, Matrix *m2) {
     //checking the dimensions of the input matrices
     if (m1->cols != m2->rows) {
         printf("invalid dimensions\n");
         exit(-1);
     }
-    matrix product = matrix(m1->rows, m2->cols);
+    Matrix product = Matrix(m1->rows, m2->cols);
 
     for (int i = 0; i < m1->rows; i++) {
         for (int j = 0; j < m2->cols; j++) {
@@ -26,12 +26,12 @@ matrix ops::multiply(matrix *m1, matrix *m2) {
     }
     return product;
 }
-matrix ops::add(matrix *m1, matrix *m2) {
+Matrix Ops::add(Matrix *m1, Matrix *m2) {
     if (m1->rows != m2->rows || m1->cols != m2->cols) {
         printf("invalid dimensions\n");
         exit(-1);
     }
-    matrix out = matrix(m1->rows, m1->cols);
+    Matrix out = Matrix(m1->rows, m1->cols);
     for (int i = 0; i < m1->rows; i++) {
         for (int j = 0; j < m1->cols; j++) {
             out.elements[i][j] = m1->elements[i][j] + m2->elements[i][j];
@@ -39,12 +39,12 @@ matrix ops::add(matrix *m1, matrix *m2) {
     }
     return out;
 }
-matrix ops::subtract(matrix *m1, matrix *m2) {
+Matrix Ops::subtract(Matrix *m1, Matrix *m2) {
     if (m1->rows != m2->rows || m1->cols != m2->cols) {
         printf("invalid dimensions\n");
         exit(-1);
     }
-    matrix out = matrix(m1->rows, m1->cols);
+    Matrix out = Matrix(m1->rows, m1->cols);
     for (int i = 0; i < m1->rows; i++) {
         for (int j = 0; j < m1->cols; j++) {
             out.elements[i][j] = m1->elements[i][j] - m2->elements[i][j];

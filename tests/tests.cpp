@@ -3,13 +3,13 @@
 //
 
 #include "tests.h"
-#include "../net/dense.h"
+#include "../net/Dense.h"
 
 void test_mult() {
 
 }
 void test_dense() {
-    dense layer = dense(2, 1);
-    matrix vec = matrix(1, 2);
+    Dense layer = Dense(2, 1);
+    Matrix vec = Matrix(1, 2);
     layer.forward(&vec).print();
 }

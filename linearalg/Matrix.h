@@ -6,29 +6,29 @@
 #define WEEGRAD_MATRIX_H
 
 
-class matrix {
+class Matrix {
     public:
         int rows;
         int cols;
         double** elements;
 
-        matrix(int rows, int cols);
+        Matrix(int rows, int cols);
 
-        matrix transpose();
+        Matrix transpose();
 
-        matrix resize(int r, int c);
+        Matrix resize(int r, int c);
 
         void m_free();
 
         void print();
 
-        matrix randomize();
+        Matrix randomize();
 
         double** m_allocate(int r, int c);
 
-        matrix broadcast(double (*fn)(double));
+        Matrix broadcast(double (*fn)(double));
 
-    matrix clone();
+    Matrix clone();
 };
 
 
