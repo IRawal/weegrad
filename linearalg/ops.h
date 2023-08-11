@@ -14,6 +14,7 @@ class ops {
         int cols;
         static matrix multiply(matrix *m1, matrix *m2);
         static matrix add(matrix *m1, matrix *m2);
+        static matrix subtract(matrix *m1, matrix *m2);
 };
 
 

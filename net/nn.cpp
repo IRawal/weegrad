@@ -27,6 +27,12 @@ double nn::relu(double x) {
     else
         return x;
 }
+double nn::drelu(double x) {
+    if (x < 0)
+        return 0;
+    else
+        return 1;
+}
 double loss(matrix *in, matrix *expected) {
     if (in->rows != expected->rows || in->cols != expected->cols)
         exit(-1);
@@ -53,6 +59,9 @@ matrix nn::forward(matrix *in, double (*fn)(double)) {
 matrix nn::train(matrix *in, matrix *expected) {
     matrix out = forward(in, &relu);
     double mse = loss(&out, expected);
-
+    matrix dcda = ops::subtract(&neurons[depth], expected).broadcast([](double d){return d * 2;}); // dCost/dOut = 2(y - yhat)
+    matrix dadz = dcda.clone().broadcast(&drelu);
+    matrix dzdw = *in;
+    dcdw =
 }
 

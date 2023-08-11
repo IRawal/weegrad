@@ -15,6 +15,7 @@ class nn {
         matrix forward(matrix *in, double (*fn)(double));
         matrix train(matrix *in, matrix *expected);
         static double relu(double x);
+        static double drelu(double x);
     dense* layers;
     matrix* neurons;
     int depth;

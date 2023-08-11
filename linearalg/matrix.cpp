@@ -16,7 +16,7 @@ matrix::matrix(int r, int c) {
     cols = c;
     elements = m_allocate(r, c);
 }
-void matrix::resize(int r, int c) {
+matrix matrix::resize(int r, int c) {
     if (rows * cols != r * c)
         exit(-1);
     double** newEls = m_allocate(r, c);
@@ -35,9 +35,11 @@ void matrix::resize(int r, int c) {
     rows = r;
     cols = c;
     elements = newEls;
+    return *this;
 }
-void matrix::transpose() {
+matrix matrix::transpose() {
     resize(cols, rows);
+    return *this;
 }
 double** matrix::m_allocate(int r, int c) {
     double** els = static_cast<double **>(malloc(r * sizeof(double *)));
@@ -60,18 +62,29 @@ void matrix::print() {
         printf("%s", "\n");
     }
 }
-void matrix::randomize() {
+matrix matrix::randomize() {
     srand(time(0));
     for (int i = 0; i < rows; i++) {
         for (int k = 0; k < cols; k++) {
             elements[i][k] = (double) rand() / RAND_MAX;
         }
     }
+    return *this;
 }
-void matrix::broadcast(double (*fn)(double)) {
+matrix matrix::broadcast(double (*fn)(double)) {
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
             elements[i][j] = fn(elements[i][j]);
         }
     }
+    return *this;
+}
+matrix matrix::clone() {
+    matrix newMat = matrix(rows, cols);
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            newMat.elements[i][j] = elements[i][j];
+        }
+    }
+    return newMat;
 }

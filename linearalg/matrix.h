@@ -14,19 +14,21 @@ class matrix {
 
         matrix(int rows, int cols);
 
-        void transpose();
+        matrix transpose();
 
-        void resize(int r, int c);
+        matrix resize(int r, int c);
 
         void m_free();
 
         void print();
 
-        void randomize();
+        matrix randomize();
 
         double** m_allocate(int r, int c);
 
-        void broadcast(double (*fn)(double));
+        matrix broadcast(double (*fn)(double));
+
+    matrix clone();
 };
 
 

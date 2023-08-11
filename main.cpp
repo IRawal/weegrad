@@ -5,16 +5,16 @@
 #include "net/nn.h"
 
 int main() {
-    int depth = 2;
+    int depth = 1;
     dense* layers = static_cast<dense*>(malloc(sizeof(dense) * depth));
-    layers[0] = dense(2, 2);
-    layers[1] = dense(2, 1);
+    layers[0] = dense(1, 1);
     nn net = nn(layers, depth);
 
-    matrix in = matrix(1, 2);
+    matrix in = matrix(1, 1);
+    in.elements[0][0] = 1;
 
-    //net.train(&in, new matrix(1, 1));
-
+    net.train(&in, new matrix(1, 1));
+    net.forward(&in, &nn::relu).print();
 
     return 0;
 }
