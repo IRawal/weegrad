@@ -10,7 +10,7 @@
 
 class Layer {
     public:
-        virtual Matrix forward(Matrix* in) = 0;
+        virtual Matrix* forward(Matrix* in) = 0;
 };
 
 

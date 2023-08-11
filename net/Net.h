@@ -13,8 +13,8 @@
 class Net {
     public:
         Net(std::vector<Layer *> layers, int depth);
-        Matrix forward(Matrix *in);
-        Matrix train(Matrix *in, Matrix *expected);
+        Matrix * forward(Matrix *in);
+        void train(Matrix *in, Matrix *expected);
     std::vector<Layer*> layers;
     Matrix* neurons;
     int depth;

@@ -13,10 +13,10 @@ double ReLU::relu(double x) {
 }
 double ReLU::drelu(double x) {
     if (x < 0)
-        return 0;
+        return 0.0001;
     else
         return 1;
 }
-Matrix ReLU::forward(Matrix *in) {
+Matrix* ReLU::forward(Matrix *in) {
     return in->broadcast(&relu);
 }

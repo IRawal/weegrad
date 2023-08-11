@@ -62,29 +62,37 @@ void Matrix::print() {
         printf("%s", "\n");
     }
 }
-Matrix Matrix::randomize() {
+Matrix* Matrix::randomize() {
     srand(time(0));
     for (int i = 0; i < rows; i++) {
         for (int k = 0; k < cols; k++) {
             elements[i][k] = (double) rand() / RAND_MAX;
         }
     }
-    return *this;
+    return this;
 }
-Matrix Matrix::broadcast(double (*fn)(double)) {
+Matrix* Matrix::broadcast(double (*fn)(double)) {
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
             elements[i][j] = fn(elements[i][j]);
         }
     }
-    return *this;
+    return this;
 }
-Matrix Matrix::clone() {
-    Matrix newMat = Matrix(rows, cols);
+Matrix* Matrix::clone() {
+    Matrix* newMat = new Matrix(rows, cols);
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
-            newMat.elements[i][j] = elements[i][j];
+            newMat->elements[i][j] = elements[i][j];
         }
     }
     return newMat;
+}
+double Matrix::sum() {
+    double sum = 0;
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            sum += elements[i][j];
+        }
+    }
 }

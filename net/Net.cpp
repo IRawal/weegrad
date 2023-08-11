@@ -35,20 +35,37 @@ double loss(Matrix *in, Matrix *expected) {
     }
     return loss / (in->rows * in->cols);
 }
-Matrix Net::forward(Matrix *in) {
+Matrix* Net::forward(Matrix *in) {
     // Load input into network
     neurons[0] = *in;
     // Apply each Layer
     for (int i = 0; i < depth; i++) {
-        neurons[i + 1] = layers[i]->forward(&neurons[i]);
+        neurons[i + 1] = *layers[i]->forward(&neurons[i]);
     }
-    return neurons[depth];
+    return &neurons[depth];
 }
-Matrix Net::train(Matrix *in, Matrix *expected) {
-    Matrix out = forward(in);
-    double mse = loss(&out, expected);
-    Matrix dcda = Ops::subtract(&neurons[depth], expected).broadcast([](double d) -> double {return d * 2;}); // dCost/dOut = 2(y - yhat)
-    Matrix dadz = dcda.clone().broadcast(&ReLU::drelu);
-    Matrix dzdw = *in;
+void Net::train(Matrix *in, Matrix *expected) {
+    for (int i = 0; i < 1000; i++) {
+        Matrix* newIn = in->clone();
+        Matrix* out = forward(newIn);
+        printf("Out: %f\n", out->elements[0][0]);
+
+        double mse = loss(out, expected);
+        printf("Loss: %f\n", mse);
+
+        Matrix* dcda = Ops::subtract(&neurons[depth], expected)->broadcast(
+                [](double d) -> double { return d * 2; }); // dCost/dOut = 2(y - yhat)
+
+
+        double dzdw = in->elements[0][0] * dcda->elements[0][0];
+
+        printf("dzdw: %f\n", dzdw);
+
+        ((Dense*)layers[0])->weights->elements[0][0] -= 0.01 * dzdw;
+        ((Dense*)layers[0])->biases->elements[0][0] -= 0.01 * dcda->elements[0][0];
+
+        printf("Weight: %f\n", (((Dense *) layers[0])->weights->elements[0][0]));
+        printf("Bias: %f\n", (((Dense *) layers[0])->biases->elements[0][0]));
+    }
 }
 

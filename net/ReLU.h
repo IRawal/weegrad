@@ -10,7 +10,7 @@
 
 class ReLU : public Layer {
     public:
-        Matrix forward(Matrix *in);
+        Matrix* forward(Matrix *in);
         static double drelu(double x);
         static double relu(double x);
 };

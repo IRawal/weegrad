@@ -22,13 +22,15 @@ class Matrix {
 
         void print();
 
-        Matrix randomize();
+        Matrix * randomize();
 
         double** m_allocate(int r, int c);
 
-        Matrix broadcast(double (*fn)(double));
+        Matrix * broadcast(double (*fn)(double));
 
-    Matrix clone();
+        Matrix * clone();
+
+        double sum();
 };
 
 
