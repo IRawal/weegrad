@@ -5,6 +5,9 @@
 #include <cstdio>
 #include "ReLU.h"
 
+ReLU::ReLU() {
+    this->type = LayerType::ActivationFn;
+}
 double ReLU::relu(double x) {
     if (x < 0)
         return 0;

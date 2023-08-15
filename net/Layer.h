@@ -7,11 +7,14 @@
 
 
 #include "../linearalg/Matrix.h"
+#include "LayerType.h"
 
 class Layer {
     public:
         virtual Matrix* forward(Matrix* in) = 0;
+        LayerType type;
 };
+
 
 
 #endif //WEEGRAD_LAYER_H

@@ -10,6 +10,7 @@ Matrix* weights;
 Matrix* biases;
 
 Dense::Dense(int inLen, int outLen) {
+    this->type = LayerType::Dense;
     weights = new Matrix(inLen, outLen);
     biases = new Matrix(1, outLen);
     weights->randomize();

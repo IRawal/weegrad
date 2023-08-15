@@ -17,4 +17,6 @@ add_executable(weegrad main.cpp
         net/Layer.cpp
         net/Layer.h
         net/ReLU.cpp
-        net/ReLU.h)
+        net/ReLU.h
+        net/LayerType.cpp
+        net/LayerType.h)
