@@ -12,9 +12,10 @@ class Ops {
     public:
         int rows;
         int cols;
-        static Matrix * multiply(Matrix *m1, Matrix *m2);
+        static Matrix * matmul(Matrix *m1, Matrix *m2);
         static Matrix * add(Matrix *m1, Matrix *m2);
         static Matrix * subtract(Matrix *m1, Matrix *m2);
+        static Matrix *schur(Matrix *m1, Matrix *m2);
 };
 
 

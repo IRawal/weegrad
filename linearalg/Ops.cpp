@@ -7,7 +7,7 @@
 #include "Ops.h"
 #include "Matrix.h"
 
-Matrix* Ops::multiply(Matrix *m1, Matrix *m2) {
+Matrix* Ops::matmul(Matrix *m1, Matrix *m2) {
     //checking the dimensions of the input matrices
     if (m1->cols != m2->rows) {
         printf("invalid dimensions\n");
@@ -25,6 +25,19 @@ Matrix* Ops::multiply(Matrix *m1, Matrix *m2) {
         }
     }
     return product;
+}
+Matrix* Ops::schur(Matrix *m1, Matrix *m2) {
+    if (m1->rows != m2->rows || m1->cols != m2->cols) {
+        printf("invalid dimensions\n");
+        exit(-1);
+    }
+    Matrix* out = new Matrix(m1->rows, m1->cols);
+    for (int i = 0; i < m1->rows; i++) {
+        for (int j = 0; j < m1->cols; j++) {
+            out->elements[i][j] = m1->elements[i][j] * m2->elements[i][j];
+        }
+    }
+    return out;
 }
 Matrix* Ops::add(Matrix *m1, Matrix *m2) {
     if (m1->rows != m2->rows || m1->cols != m2->cols) {

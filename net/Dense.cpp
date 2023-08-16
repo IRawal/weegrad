@@ -17,7 +17,7 @@ Dense::Dense(int inLen, int outLen) {
     biases->randomize();
 }
 Matrix* Dense::forward(Matrix* in) {
-    Matrix* out = Ops::multiply(in, weights);
+    Matrix* out = Ops::matmul(in, weights);
     out = Ops::add(out, biases);
     return out;
 }

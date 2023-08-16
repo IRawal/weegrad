@@ -4,6 +4,7 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <functional>
 
 #include "Matrix.h"
 
@@ -16,7 +17,7 @@ Matrix::Matrix(int r, int c) {
     cols = c;
     elements = m_allocate(r, c);
 }
-Matrix Matrix::resize(int r, int c) {
+Matrix* Matrix::resize(int r, int c) {
     if (rows * cols != r * c)
         exit(-1);
     double** newEls = m_allocate(r, c);
@@ -35,11 +36,11 @@ Matrix Matrix::resize(int r, int c) {
     rows = r;
     cols = c;
     elements = newEls;
-    return *this;
+    return this;
 }
-Matrix Matrix::transpose() {
+Matrix* Matrix::transpose() {
     resize(cols, rows);
-    return *this;
+    return this;
 }
 double** Matrix::m_allocate(int r, int c) {
     double** els = static_cast<double **>(malloc(r * sizeof(double *)));
@@ -71,7 +72,8 @@ Matrix* Matrix::randomize() {
     }
     return this;
 }
-Matrix* Matrix::broadcast(double (*fn)(double)) {
+Matrix* Matrix::broadcast(std::function<double(double)> fn) {
+
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
             elements[i][j] = fn(elements[i][j]);

@@ -2,6 +2,8 @@
 // Created by isha on 8/6/23.
 //
 
+#include <functional>
+
 #ifndef WEEGRAD_MATRIX_H
 #define WEEGRAD_MATRIX_H
 
@@ -14,9 +16,9 @@ class Matrix {
 
         Matrix(int rows, int cols);
 
-        Matrix transpose();
+        Matrix * transpose();
 
-        Matrix resize(int r, int c);
+        Matrix * resize(int r, int c);
 
         void m_free();
 
@@ -26,7 +28,7 @@ class Matrix {
 
         double** m_allocate(int r, int c);
 
-        Matrix * broadcast(double (*fn)(double));
+        Matrix * broadcast(std::function<double(double)> fn);
 
         Matrix * clone();
 

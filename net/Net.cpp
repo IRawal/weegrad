@@ -51,19 +51,34 @@ void Net::train(Matrix *in, Matrix *expected, double rate) {
         //printf("Out: %f\n", out->elements[0][0]);
         Matrix* dcda = Ops::subtract(&neurons[depth], expected); // dCost/dOut ~= (y - yhat);
 
-        double dcdb = dcda->elements[0][0];
+        //double dcdb = dcda->elements[0][0];
+        Matrix* dcdb = dcda;
 
         for (int i = depth - 1; i >= 0; i--) {
             Layer* layer = layers[i];
 
             if (layer->type == LayerType::Dense) {
-                dcdb *= ((Dense*) layers[i])->weights->elements[0][0];
-                double dcdw = dcdb * neurons[i].elements[0][0];
-                ((Dense *) layer)->weights->elements[0][0] -= dcdw * rate;
-                ((Dense *) layer)->biases->elements[0][0] -= dcdb * rate;
+                Dense* dense = ((Dense *) layer);
+
+                Matrix* dcdw = Ops::matmul(dcdb->transpose(), &neurons[i]);
+
+                ((Dense *) layer)->weights = Ops::subtract(dense->weights, dcdw->broadcast([&rate](double d) -> double {return d * rate;})->transpose());
+                ((Dense *) layer)->biases = Ops::subtract(dense->biases, dcdb->clone()->transpose()->broadcast([&rate](double d) -> double {return d * rate;}));
+
+                //dcdb *= ((Dense*) layers[i])->weights->elements[0][0];
+                if (i != 0)
+                    dcdb = Ops::matmul(dcdb, dense->weights->clone()->transpose());
+                //double dcdw = dcdb * neurons[i].elements[0][0];
+
+
+                //((Dense *) layer)->weights->elements[0][0] -= dcdw * rate;
+                //((Dense *) layer)->biases->elements[0][0] -= dcdb * rate;
+
+
             }
             else if (layer->type == LayerType::ActivationFn) {
-                dcdb *= neurons[i].broadcast(&ReLU::drelu)->elements[0][0];
+                dcdb = Ops::schur(dcdb, neurons[i].broadcast(&ReLU::drelu));
+                //dcdb *= neurons[i].broadcast(&ReLU::drelu);
             }
         }
     }
