@@ -44,8 +44,8 @@ Matrix* Net::forward(Matrix *in) {
     }
     return &neurons[depth];
 }
-void Net::train(Matrix *in, Matrix *expected, double rate) {
-    for (int eps = 0; eps < 100; eps++) {
+void Net::train(Matrix *in, Matrix *expected, double rate, int epochs) {
+    for (int eps = 0; eps < epochs; eps++) {
         Matrix* newIn = in->clone();
         Matrix* out = forward(newIn);
         //printf("Out: %f\n", out->elements[0][0]);
@@ -66,8 +66,7 @@ void Net::train(Matrix *in, Matrix *expected, double rate) {
                 ((Dense *) layer)->biases = Ops::subtract(dense->biases, dcdb->clone()->transpose()->broadcast([&rate](double d) -> double {return d * rate;}));
 
                 //dcdb *= ((Dense*) layers[i])->weights->elements[0][0];
-                if (i != 0)
-                    dcdb = Ops::matmul(dcdb, dense->weights->clone()->transpose());
+                dcdb = Ops::matmul(dense->weights->clone(), dcdb);
                 //double dcdw = dcdb * neurons[i].elements[0][0];
 
 
@@ -77,7 +76,7 @@ void Net::train(Matrix *in, Matrix *expected, double rate) {
 
             }
             else if (layer->type == LayerType::ActivationFn) {
-                dcdb = Ops::schur(dcdb, neurons[i].broadcast(&ReLU::drelu));
+                dcdb = Ops::schur(dcdb->transpose(), neurons[i].broadcast(&ReLU::drelu));
                 //dcdb *= neurons[i].broadcast(&ReLU::drelu);
             }
         }
