@@ -48,11 +48,8 @@ void Net::train(Matrix *in, Matrix *expected, double rate, int epochs) {
     for (int eps = 0; eps < epochs; eps++) {
         Matrix* newIn = in->clone();
         Matrix* out = forward(newIn);
-        //printf("Out: %f\n", out->elements[0][0]);
-        Matrix* dcda = Ops::subtract(&neurons[depth], expected); // dCost/dOut ~= (y - yhat);
 
-        //double dcdb = dcda->elements[0][0];
-        Matrix* dcdb = dcda;
+        Matrix* dcdb = Ops::subtract(&neurons[depth], expected); // dCost/dOut ~= (y - yhat);
 
         for (int i = depth - 1; i >= 0; i--) {
             Layer* layer = layers[i];
@@ -62,18 +59,20 @@ void Net::train(Matrix *in, Matrix *expected, double rate, int epochs) {
 
                 Matrix* dcdw = Ops::matmul(dcdb->transpose(), &neurons[i]);
 
+                Matrix* dcdb_t = dcdb->clone()->transpose();
+
                 ((Dense *) layer)->weights = Ops::subtract(dense->weights, dcdw->broadcast([&rate](double d) -> double {return d * rate;})->transpose());
-                ((Dense *) layer)->biases = Ops::subtract(dense->biases, dcdb->clone()->transpose()->broadcast([&rate](double d) -> double {return d * rate;}));
+                ((Dense *) layer)->biases = Ops::subtract(dense->biases, dcdb_t->broadcast([&rate](double d) -> double {return d * rate;}));
 
-                //dcdb *= ((Dense*) layers[i])->weights->elements[0][0];
-                dcdb = Ops::matmul(dense->weights->clone(), dcdb);
-                //double dcdw = dcdb * neurons[i].elements[0][0];
+                delete(dcdw);
 
+                delete(dcdb_t);
 
-                //((Dense *) layer)->weights->elements[0][0] -= dcdw * rate;
-                //((Dense *) layer)->biases->elements[0][0] -= dcdb * rate;
+                Matrix* new_dcdb = Ops::matmul(dense->weights, dcdb);
 
+                delete(dcdb);
 
+                dcdb = new_dcdb;
             }
             else if (layer->type == LayerType::ActivationFn) {
                 dcdb = Ops::schur(dcdb->transpose(), neurons[i].broadcast(&ReLU::drelu));

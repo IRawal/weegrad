@@ -33,6 +33,8 @@ class Matrix {
         Matrix * clone();
 
         double sum();
+
+        ~Matrix();
 };
 
 

@@ -98,3 +98,7 @@ double Matrix::sum() {
         }
     }
 }
+
+Matrix::~Matrix() {
+    m_free();
+}

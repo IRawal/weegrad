@@ -18,12 +18,12 @@ int main() {
 
     Net net = Net(layers, depth);
 
-    Matrix in = Matrix(1, 1);
-    in.elements[0][0] = 1.3;
+    Matrix* in = new Matrix(1, 1);
+    in->elements[0][0] = 1.3;
 
-    Matrix* expected = Matrix(1, 1).broadcast([](double d) -> double {return 2;});
-    net.train(&in, expected, 0.001, 10000);
-    net.forward(&in)->print();
+    Matrix* expected = (new Matrix(1, 1))->broadcast([](double d) -> double {return 2;});
+    net.train(in, expected, 0.001, 10000);
+    net.forward(in)->print();
 
     return 0;
 }
