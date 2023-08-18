@@ -5,15 +5,13 @@
 #ifndef WEEGRAD_RELU_H
 #define WEEGRAD_RELU_H
 
+#include "ActivationLayer.h"
 
-#include "Layer.h"
-
-class ReLU : public Layer {
+class ReLU : public ActivationLayer {
     public:
         ReLU();
-        Matrix* forward(Matrix *in);
-        static double drelu(double x);
-        static double relu(double x);
+        double f(double x);
+        double dfdx(double x);
 };
 
 

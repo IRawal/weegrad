@@ -7,14 +7,16 @@
 #include "net/ReLU.h"
 
 int main() {
-    int depth = 5;
+    int depth = 7;
     Layer** layers = static_cast<Layer**>(malloc(sizeof(Layer*) * depth));
 
-    layers[0] = new Dense(2, 3);
+    layers[0] = new Dense(2, 5);
     layers[1] = new ReLU();
-    layers[2] = new Dense(3, 3);
+    layers[2] = new Dense(5, 5);
     layers[3] = new ReLU();
-    layers[4] = new Dense(3, 1);
+    layers[4] = new Dense(5, 2);
+    layers[5] = new ReLU();
+    layers[6] = new Dense(2, 1);
 
     Net net = Net(layers, depth);
 
@@ -23,42 +25,41 @@ int main() {
     Matrix** xs = static_cast<Matrix**>(malloc(sizeof(Matrix*) * examples));
     Matrix** ys = static_cast<Matrix**>(malloc(sizeof(Matrix*) * examples));
 
-
-    xs[0] = new Matrix(1, 2);
-    xs[0]->elements[0][0] = 2;
-    xs[0]->elements[0][1] = 3;
-    xs[1] = new Matrix(1, 2);
-    xs[1]->elements[0][0] = 4;
-    xs[1]->elements[0][1] = 6;
-    xs[2] = new Matrix(1, 2);
-    xs[2]->elements[0][0] = 8;
-    xs[2]->elements[0][1] = 4;
-    xs[3] = new Matrix(1, 2);
-    xs[3]->elements[0][0] = 7;
-    xs[3]->elements[0][1] = 9;
-    xs[4] = new Matrix(1, 2);
-    xs[4]->elements[0][0] = 12;
-    xs[4]->elements[0][1] = 5;
+    xs[0] = new Matrix(2, 1);
+    xs[0]->elements[0][0] = 0.1;
+    xs[0]->elements[1][0] = 0.2;
+    xs[1] = new Matrix(2, 1);
+    xs[1]->elements[0][0] = 0.5;
+    xs[1]->elements[1][0] = 0.7;
+    xs[2] = new Matrix(2, 1);
+    xs[2]->elements[0][0] = 0.8;
+    xs[2]->elements[1][0] = 0.4;
+    xs[3] = new Matrix(2, 1);
+    xs[3]->elements[0][0] = 0.11;
+    xs[3]->elements[1][0] = 0.14;
+    xs[4] = new Matrix(2, 1);
+    xs[4]->elements[0][0] = 0.6;
+    xs[4]->elements[1][0] = 0.23;
 
     ys[0] = new Matrix(1, 1);
-    ys[0]->elements[0][0] = 2 * 3;
+    ys[0]->elements[0][0] = 0.1+0.2;
     ys[1] = new Matrix(1, 1);
-    ys[1]->elements[0][0] = 4 * 6;
+    ys[1]->elements[0][0] = 0.5+0.7;
     ys[2] = new Matrix(1, 1);
-    ys[2]->elements[0][0] = 8 * 4;
+    ys[2]->elements[0][0] = 0.8+0.4;
     ys[3] = new Matrix(1, 1);
-    ys[3]->elements[0][0] = 7 * 9;
+    ys[3]->elements[0][0] = 0.11+0.14;
     ys[4] = new Matrix(1, 1);
-    ys[4]->elements[0][0] = 12 * 5;
+    ys[4]->elements[0][0] = 0.6+0.23;
 
-    net.train(xs, ys, examples, 0.00001, 1000);
+    net.train(xs, ys, examples, 0.01, 10000);
 
-    Matrix* input = (new Matrix(1, 2));
-    input->elements[0][0] = 3;
-    input->elements[0][1] = 14;
+    Matrix* input = new Matrix(2, 1);
+    input->elements[0][0] = 0.4;
+    input->elements[1][0] = 0.2;
 
-    printf("%s", "Input:" );
-    input->print();
+    printf("%s\n", "Input:" );
+    xs[0]->print();
     printf("%s", "Output: ");
 
     net.forward(input)->print();

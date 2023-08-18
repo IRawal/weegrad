@@ -65,3 +65,25 @@ Matrix* Ops::subtract(Matrix *m1, Matrix *m2) {
     }
     return out;
 }
+Matrix * Ops::rowSum(Matrix *in) {
+    Matrix* newMat = new Matrix(in->rows, 1);
+    for (int i = 0; i < in->rows; i++) {
+        double sum = 0;
+        for (int j = 0; j < in->cols; j++) {
+            sum += in->elements[i][j];
+        }
+        newMat->elements[i][0] = sum;
+    }
+    return newMat;
+}
+Matrix * Ops::colSum(Matrix *in) {
+    Matrix* newMat = new Matrix(1, in->cols);
+    for (int i = 0; i < in->cols; i++) {
+        double sum = 0;
+        for (int j = 0; j < in->rows; j++) {
+            sum += in->elements[j][i];
+        }
+        newMat->elements[0][i] = sum;
+    }
+    return newMat;
+}

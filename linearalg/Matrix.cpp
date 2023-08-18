@@ -73,7 +73,6 @@ Matrix* Matrix::randomize() {
     return this;
 }
 Matrix* Matrix::broadcast(std::function<double(double)> fn) {
-
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
             elements[i][j] = fn(elements[i][j]);
@@ -81,7 +80,7 @@ Matrix* Matrix::broadcast(std::function<double(double)> fn) {
     }
     return this;
 }
-Matrix* Matrix::clone() {
+Matrix* Matrix::copy() {
     Matrix* newMat = new Matrix(rows, cols);
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {

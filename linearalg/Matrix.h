@@ -30,7 +30,7 @@ class Matrix {
 
         Matrix * broadcast(std::function<double(double)> fn);
 
-        Matrix * clone();
+        Matrix * copy();
 
         double sum();
 

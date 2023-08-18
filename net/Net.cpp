@@ -48,7 +48,7 @@ void Net::train(Matrix **xs, Matrix **ys, int examples, double rate, int epochs)
     for (int eps = 0; eps < epochs; eps++) {
 
         for (int i = 0; i < examples; i++) {
-            Matrix* newIn = xs[i]->clone();
+            Matrix* newIn = xs[i]->copy();
 
             Matrix* out = forward(newIn);
             printf("Loss: %f\n", loss(out, ys[i]));
@@ -56,6 +56,7 @@ void Net::train(Matrix **xs, Matrix **ys, int examples, double rate, int epochs)
         }
     }
 }
+
 void Net::step(Matrix *expected, double rate) {
     Matrix* dcdb = Ops::subtract(&neurons[depth], expected); // dCost/dOut ~= (y - yhat);
     for (int i = depth - 1; i >= 0; i--) {
@@ -64,27 +65,19 @@ void Net::step(Matrix *expected, double rate) {
         if (layer->type == LayerType::Dense) {
             Dense* dense = ((Dense *) layer);
 
-            Matrix* dcdw = Ops::matmul(dcdb->transpose(), &neurons[i]);
+            Matrix* dcdw = Ops::matmul(dcdb, neurons[i].copy()->transpose());
 
-            Matrix* dcdb_t = dcdb->clone()->transpose();
+            Matrix* bsum = Ops::rowSum(dcdb);
 
-            ((Dense *) layer)->weights = Ops::subtract(dense->weights, dcdw->broadcast([&rate](double d) -> double {return d * rate;})->transpose());
-            ((Dense *) layer)->biases = Ops::subtract(dense->biases, dcdb_t->broadcast([&rate](double d) -> double {return d * rate;}));
+            dense->weights = Ops::subtract(dense->weights, dcdw->broadcast([&rate](double d) -> double {return d * rate;}));
+            dense->biases = Ops::subtract(dense->biases, bsum->broadcast([&rate](double d) -> double {return d * rate;}));
 
-            delete(dcdw);
-
-            delete(dcdb_t);
-
-            Matrix* new_dcdb = Ops::matmul(dense->weights, dcdb);
-
-            delete(dcdb);
-
-            dcdb = new_dcdb;
+            dcdb = Ops::matmul(dense->weights->copy()->transpose(), dcdb);
         }
         else if (layer->type == LayerType::ActivationFn) {
-            dcdb = Ops::schur(dcdb->transpose(), neurons[i].broadcast(&ReLU::drelu));
-            //dcdb *= neurons[i].broadcast(&ReLU::drelu);
+            dcdb = Ops::schur(dcdb, neurons[i].copy()->broadcast([&layer](double d){return ((ActivationLayer*) layer)->dfdx(d);}));
         }
     }
 }
+
 
