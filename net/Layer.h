@@ -5,7 +5,6 @@
 #ifndef WEEGRAD_LAYER_H
 #define WEEGRAD_LAYER_H
 
-
 #include "../linearalg/Matrix.h"
 #include "LayerType.h"
 

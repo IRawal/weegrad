@@ -5,5 +5,7 @@
 #include "ActivationLayer.h"
 
 Matrix *ActivationLayer::forward(Matrix *in) {
-    return in->broadcast([this](double d){return f(d);});
+    return in->copy()->broadcast([this](double d){return f(d);});
 }
+
+

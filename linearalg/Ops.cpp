@@ -26,46 +26,7 @@ Matrix* Ops::matmul(Matrix *m1, Matrix *m2) {
     }
     return product;
 }
-Matrix* Ops::schur(Matrix *m1, Matrix *m2) {
-    if (m1->rows != m2->rows || m1->cols != m2->cols) {
-        printf("invalid dimensions\n");
-        exit(-1);
-    }
-    Matrix* out = new Matrix(m1->rows, m1->cols);
-    for (int i = 0; i < m1->rows; i++) {
-        for (int j = 0; j < m1->cols; j++) {
-            out->elements[i][j] = m1->elements[i][j] * m2->elements[i][j];
-        }
-    }
-    return out;
-}
-Matrix* Ops::add(Matrix *m1, Matrix *m2) {
-    if (m1->rows != m2->rows || m1->cols != m2->cols) {
-        printf("invalid dimensions\n");
-        exit(-1);
-    }
-    Matrix* out = new Matrix(m1->rows, m1->cols);
-    for (int i = 0; i < m1->rows; i++) {
-        for (int j = 0; j < m1->cols; j++) {
-            out->elements[i][j] = m1->elements[i][j] + m2->elements[i][j];
-        }
-    }
-    return out;
-}
-Matrix* Ops::subtract(Matrix *m1, Matrix *m2) {
-    if (m1->rows != m2->rows || m1->cols != m2->cols) {
-        printf("invalid dimensions\n");
-        exit(-1);
-    }
-    Matrix* out = new Matrix(m1->rows, m1->cols);
-    for (int i = 0; i < m1->rows; i++) {
-        for (int j = 0; j < m1->cols; j++) {
-            out->elements[i][j] = m1->elements[i][j] - m2->elements[i][j];
-        }
-    }
-    return out;
-}
-Matrix * Ops::rowSum(Matrix *in) {
+Matrix* Ops::rowSum(Matrix *in) {
     Matrix* newMat = new Matrix(in->rows, 1);
     for (int i = 0; i < in->rows; i++) {
         double sum = 0;
@@ -76,7 +37,7 @@ Matrix * Ops::rowSum(Matrix *in) {
     }
     return newMat;
 }
-Matrix * Ops::colSum(Matrix *in) {
+Matrix* Ops::colSum(Matrix *in) {
     Matrix* newMat = new Matrix(1, in->cols);
     for (int i = 0; i < in->cols; i++) {
         double sum = 0;

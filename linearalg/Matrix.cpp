@@ -1,12 +1,13 @@
 //
 // Created by isha on 8/6/23.
 //
+#include "Matrix.h"
+
+#include "../net/ActivationLayer.h"
 
 #include <cstdlib>
 #include <iostream>
 #include <functional>
-
-#include "Matrix.h"
 
 double** elements;
 int rows;
@@ -72,10 +73,56 @@ Matrix* Matrix::randomize() {
     }
     return this;
 }
+// Deprecated (Very slow)
 Matrix* Matrix::broadcast(std::function<double(double)> fn) {
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
             elements[i][j] = fn(elements[i][j]);
+        }
+    }
+    return this;
+}
+
+Matrix* Matrix::scale(double d) {
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            elements[i][j] = elements[i][j] * d;
+        }
+    }
+    return this;
+}
+Matrix* Matrix::subtract(Matrix *m2) {
+    if (rows != m2->rows || cols != m2->cols) {
+        printf("invalid dimensions\n");
+        exit(-1);
+    }
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            elements[i][j] = elements[i][j] - m2->elements[i][j];
+        }
+    }
+    return this;
+}
+Matrix* Matrix::add(Matrix *m2) {
+    if (rows != m2->rows || cols != m2->cols) {
+        printf("invalid dimensions\n");
+        exit(-1);
+    }
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            elements[i][j] = elements[i][j] + m2->elements[i][j];
+        }
+    }
+    return this;
+}
+Matrix* Matrix::shur(Matrix *m2) {
+    if (rows != m2->rows || cols != m2->cols) {
+        printf("invalid dimensions\n");
+        exit(-1);
+    }
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            elements[i][j] = elements[i][j] * m2->elements[i][j];
         }
     }
     return this;
@@ -97,7 +144,16 @@ double Matrix::sum() {
         }
     }
 }
-
+//Matrix* Matrix::activate(ActivationLayer* activationLayer) {
+//    for (int i = 0; i < rows; i++) {
+//        for (int j = 0; j < cols; j++) {
+//            elements[i][j] = activationLayer->f(elements[i][j]);
+//        }
+//    }
+//    return this;
+//}
 Matrix::~Matrix() {
     m_free();
 }
+
+

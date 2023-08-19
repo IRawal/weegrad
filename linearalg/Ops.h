@@ -13,9 +13,6 @@ class Ops {
         int rows;
         int cols;
         static Matrix * matmul(Matrix *m1, Matrix *m2);
-        static Matrix * add(Matrix *m1, Matrix *m2);
-        static Matrix * subtract(Matrix *m1, Matrix *m2);
-        static Matrix *schur(Matrix *m1, Matrix *m2);
         static Matrix *rowSum(Matrix *in);
         static Matrix *colSum(Matrix *in);
 };

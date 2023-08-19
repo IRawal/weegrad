@@ -7,5 +7,6 @@
 
 void test_mult();
 void test_dense();
+void addition_test();
 
 #endif //WEEGRAD_TESTS_H

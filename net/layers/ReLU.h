@@ -5,7 +5,7 @@
 #ifndef WEEGRAD_RELU_H
 #define WEEGRAD_RELU_H
 
-#include "ActivationLayer.h"
+#include "../ActivationLayer.h"
 
 class ReLU : public ActivationLayer {
     public:

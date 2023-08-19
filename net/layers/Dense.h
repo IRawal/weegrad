@@ -6,8 +6,8 @@
 #define WEEGRAD_DENSE_H
 
 
-#include "../linearalg/Matrix.h"
-#include "Layer.h"
+#include "../../linearalg/Matrix.h"
+#include "../Layer.h"
 
 class Dense : public Layer {
     public:

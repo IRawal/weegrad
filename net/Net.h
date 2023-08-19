@@ -8,7 +8,7 @@
 
 #include <vector>
 #include "../linearalg/Matrix.h"
-#include "Dense.h"
+#include "layers/Dense.h"
 
 class Net {
     public:
@@ -17,7 +17,7 @@ class Net {
         void train(Matrix **xs, Matrix **ys, int examples, double rate, int epochs);
         void step(Matrix *expected, double rate);
         Layer** layers;
-        Matrix* neurons;
+        Matrix** neurons;
         int depth;
 };
 

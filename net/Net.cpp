@@ -3,11 +3,11 @@
 //
 
 #include "Net.h"
-#include "Dense.h"
+#include "layers/Dense.h"
 
 #include "../linearalg/Matrix.h"
 #include "../linearalg/Ops.h"
-#include "ReLU.h"
+#include "layers/ReLU.h"
 
 #include <cmath>
 #include <cstdlib>
@@ -22,7 +22,7 @@ int depth;
 Net::Net(Layer** layers, int depth) {
     this->layers = layers;
     this->depth = depth;
-    neurons = static_cast<Matrix*>(malloc(sizeof(Matrix) * (depth + 1))); // One output for each layer + input layer
+    neurons = static_cast<Matrix**>(malloc(sizeof(Matrix*) * (depth + 1))); // One output for each layer + input layer
 }
 double loss(Matrix *in, Matrix *expected) {
     if (in->rows != expected->rows || in->cols != expected->cols)
@@ -37,47 +37,67 @@ double loss(Matrix *in, Matrix *expected) {
 }
 Matrix* Net::forward(Matrix *in) {
     // Load input into network
-    neurons[0] = *in;
+    neurons[0] = in;
     // Apply each Layer
     for (int i = 0; i < depth; i++) {
-        neurons[i + 1] = *layers[i]->forward(&neurons[i]);
+        neurons[i + 1] = layers[i]->forward(neurons[i]);
     }
-    return &neurons[depth];
+    return neurons[depth];
 }
 void Net::train(Matrix **xs, Matrix **ys, int examples, double rate, int epochs) {
     for (int eps = 0; eps < epochs; eps++) {
-
         for (int i = 0; i < examples; i++) {
-            Matrix* newIn = xs[i]->copy();
-
-            Matrix* out = forward(newIn);
+            Matrix* in = xs[i]->copy();
+            Matrix* out = forward(in);
             printf("Loss: %f\n", loss(out, ys[i]));
             step(ys[i], 0.001);
+
+            for (int j = 0; j <= depth; j++) {
+                delete neurons[j];
+            }
         }
+        printf("Epoch: %i\n", eps + 1);
     }
 }
-
 void Net::step(Matrix *expected, double rate) {
-    Matrix* dcdb = Ops::subtract(&neurons[depth], expected); // dCost/dOut ~= (y - yhat);
+    Matrix* neuron_copy = neurons[depth]->copy();
+    Matrix* dcdb = neuron_copy->subtract(expected); // dCost/dOut ~= (y - yhat);
     for (int i = depth - 1; i >= 0; i--) {
         Layer* layer = layers[i];
 
         if (layer->type == LayerType::Dense) {
             Dense* dense = ((Dense *) layer);
 
-            Matrix* dcdw = Ops::matmul(dcdb, neurons[i].copy()->transpose());
+            Matrix* neurons_t = neurons[i]->copy()->transpose();
+            Matrix* dcdw = Ops::matmul(dcdb, neurons_t);
+
+            delete neurons_t;
 
             Matrix* bsum = Ops::rowSum(dcdb);
 
-            dense->weights = Ops::subtract(dense->weights, dcdw->broadcast([&rate](double d) -> double {return d * rate;}));
-            dense->biases = Ops::subtract(dense->biases, bsum->broadcast([&rate](double d) -> double {return d * rate;}));
+            dense->weights = dense->weights->subtract(dcdw->scale(rate));
+            dense->biases = dense->biases->subtract(bsum->scale(rate));
 
-            dcdb = Ops::matmul(dense->weights->copy()->transpose(), dcdb);
+            delete dcdw;
+            delete bsum;
+
+            Matrix* weights_t = dense->weights->copy()->transpose();
+            Matrix* old_dcdb = dcdb;
+            dcdb = Ops::matmul(weights_t, dcdb);
+
+            delete old_dcdb;
+            delete weights_t;
         }
         else if (layer->type == LayerType::ActivationFn) {
-            dcdb = Ops::schur(dcdb, neurons[i].copy()->broadcast([&layer](double d){return ((ActivationLayer*) layer)->dfdx(d);}));
+            //Matrix* activated = neurons[i].copy()->activate(((ActivationLayer*) layer));
+            Matrix* activated = neurons[i]->copy()->broadcast([&layer](double d){return ((ActivationLayer*) layer)->dfdx(d);});
+
+            dcdb->shur(activated);
+
+            delete activated;
         }
     }
+    delete dcdb;
 }
 
 

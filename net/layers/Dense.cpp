@@ -3,8 +3,8 @@
 //
 
 #include "Dense.h"
-#include "../linearalg/Matrix.h"
-#include "../linearalg/Ops.h"
+#include "../../linearalg/Matrix.h"
+#include "../../linearalg/Ops.h"
 #include <random>
 
 Matrix* weights;
@@ -19,10 +19,9 @@ Dense::Dense(int inLen, int outLen) {
     std::mt19937 gen{rd()};
 
     weights->broadcast([&dist, &gen](double d) {return dist(gen);});
-    weights->print();
 }
 Matrix* Dense::forward(Matrix* in) {
     Matrix* out = Ops::matmul(weights, in);
-    out = Ops::add(out, biases);
+    out->add(biases);
     return out;
 }

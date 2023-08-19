@@ -10,15 +10,17 @@ add_executable(weegrad main.cpp
         linearalg/Ops.h
         net/Net.cpp
         net/Net.h
-        net/Dense.cpp
-        net/Dense.h
+        net/layers/Dense.cpp
+        net/layers/Dense.h
         tests/tests.cpp
         tests/tests.h
         net/Layer.cpp
         net/Layer.h
-        net/ReLU.cpp
-        net/ReLU.h
+        net/layers/ReLU.cpp
+        net/layers/ReLU.h
         net/LayerType.cpp
         net/LayerType.h
         net/ActivationLayer.cpp
-        net/ActivationLayer.h)
+        net/ActivationLayer.h
+        net/layers/Sigmoid.cpp
+        net/layers/Sigmoid.h)
