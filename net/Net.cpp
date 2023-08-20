@@ -46,11 +46,12 @@ Matrix* Net::forward(Matrix *in) {
 }
 void Net::train(Matrix **xs, Matrix **ys, int examples, double rate, int epochs) {
     for (int eps = 0; eps < epochs; eps++) {
+        Ops::shuffle(xs, ys, examples);
         for (int i = 0; i < examples; i++) {
             Matrix* in = xs[i]->copy();
             Matrix* out = forward(in);
             printf("Loss: %f\n", loss(out, ys[i]));
-            step(ys[i], 0.001);
+            step(ys[i], rate);
 
             for (int j = 0; j <= depth; j++) {
                 delete neurons[j];

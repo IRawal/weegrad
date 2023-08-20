@@ -15,6 +15,7 @@ class Ops {
         static Matrix * matmul(Matrix *m1, Matrix *m2);
         static Matrix *rowSum(Matrix *in);
         static Matrix *colSum(Matrix *in);
+        static void shuffle(Matrix **m1, Matrix **m2, int n);
 };
 
 

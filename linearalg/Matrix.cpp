@@ -65,7 +65,7 @@ void Matrix::print() {
     }
 }
 Matrix* Matrix::randomize() {
-    srand(time(0));
+    srand(time(nullptr));
     for (int i = 0; i < rows; i++) {
         for (int k = 0; k < cols; k++) {
             elements[i][k] = (double) rand() / RAND_MAX;

@@ -14,16 +14,14 @@ void test_mult() {
 
 }
 void addition_test() {
-    int depth = 7;
+    int depth = 5;
     Layer** layers = static_cast<Layer**>(malloc(sizeof(Layer*) * depth));
 
-    layers[0] = new Dense(2, 5);
+    layers[0] = new Dense(2, 2);
     layers[1] = new Sigmoid();
-    layers[2] = new Dense(5, 5);
+    layers[2] = new Dense(2, 2);
     layers[3] = new Sigmoid();
-    layers[4] = new Dense(5, 2);
-    layers[5] = new Sigmoid();
-    layers[6] = new Dense(2, 1);
+    layers[4] = new Dense(2, 1);
 
     Net net = Net(layers, depth);
 
@@ -59,11 +57,11 @@ void addition_test() {
     ys[4] = new Matrix(1, 1);
     ys[4]->elements[0][0] = 0.6+0.23;
 
-    net.train(xs, ys, examples, 0.001, 10000);
+    net.train(xs, ys, examples, 0.01, 30000);
 
     Matrix* input = new Matrix(2, 1);
-    input->elements[0][0] = 0.4;
-    input->elements[1][0] = 0.2;
+    input->elements[0][0] = 0.2;
+    input->elements[1][0] = 0.9;
 
     printf("%s\n", "Input:" );
     input->print();

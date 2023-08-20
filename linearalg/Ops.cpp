@@ -4,6 +4,10 @@
 
 #include <cstdlib>
 #include <cstdio>
+#include <numeric>
+#include <iostream>
+#include <random>
+
 #include "Ops.h"
 #include "Matrix.h"
 
@@ -48,3 +52,19 @@ Matrix* Ops::colSum(Matrix *in) {
     }
     return newMat;
 }
+/*Shuffles column vectors of length n while retaining same indices for both vectors*/
+void Ops::shuffle(Matrix **m1, Matrix **m2, int n) {
+    std::vector<int> indices = std::vector<int>(n);
+    std::iota(std::begin(indices), std::end(indices), 0);
+    std::shuffle(std::begin(indices), std::end(indices), std::random_device());
+    for (int i = 0; i < n; i++) {
+        Matrix* tmp = m1[indices[i]];
+        m1[indices[i]] = m1[i];
+        m1[i] = tmp;
+
+        tmp = m2[indices[i]];
+        m2[indices[i]] = m2[i];
+        m2[i] = tmp;
+    }
+}
+
