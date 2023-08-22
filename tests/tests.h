@@ -11,5 +11,5 @@ void test_addition();
 void addition_nn_test();
 void test_convergence();
 void test_sum();
-
+void test_nn_mult();
 #endif //WEEGRAD_TESTS_H

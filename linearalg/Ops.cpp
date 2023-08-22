@@ -13,18 +13,26 @@
 #include "Ops.h"
 #include "Matrix.h"
 
-Matrix* Ops::matmul_fast(Matrix *m1, Matrix *m2) {
-    if (m1->cols != m2->rows) {
-        printf("Invalid dimensions\n");
-        exit(-1);
-    }
-    Matrix* product = new Matrix(m1->rows, m2->cols);
-    Matrix* m2_t = m2->copy()->transpose();
-    for (int i = 0; i < m1->rows; i++) {
-        float* out = static_cast<float*>(malloc(sizeof(float) * m1->cols));
-        vec_shur_fast(m1->elements[i], m2_t->elements[i], nullptr, m1->cols);
-    }
-}
+//Matrix* Ops::matmul_fast(Matrix *m1, Matrix *m2) {
+//    if (m1->cols != m2->rows) {
+//        printf("Invalid dimensions\n");
+//        exit(-1);
+//    }
+//    Matrix* product = new Matrix(m1->rows, m2->cols);
+//    Matrix* m2_t = m2->transpose();
+//    m2_t->transpose();
+//    float* out = static_cast<float*>(malloc(sizeof(float) * m1->cols));
+//
+//    for (int i = 0; i < m1->rows; i++) {
+//        for (int j = 0; j < m2_t->rows; j++) {
+//            vec_shur_fast(m1->elements[i], m2_t->elements[i], out, m1->cols);
+//            product->elements[i][j] = vec_sum_fast(out, m1->cols);
+//        }
+//    }
+//    free(out);
+//    delete m2_t;
+//    return product;
+//}
 Matrix* Ops::matmul(Matrix *m1, Matrix *m2) {
     //checking the dimensions of the input matrices
     if (m1->cols != m2->rows) {
@@ -101,6 +109,7 @@ void Ops::shuffle(Matrix **m1, Matrix **m2, int n) {
     std::vector<int> indices = std::vector<int>(n);
     std::iota(std::begin(indices), std::end(indices), 0);
     std::shuffle(std::begin(indices), std::end(indices), std::random_device());
+
     for (int i = 0; i < n; i++) {
         Matrix* tmp = m1[indices[i]];
         m1[indices[i]] = m1[i];

@@ -25,4 +25,8 @@ add_executable(weegrad main.cpp
         net/ActivationLayer.cpp
         net/ActivationLayer.h
         net/layers/Sigmoid.cpp
-        net/layers/Sigmoid.h)
+        net/layers/Sigmoid.h
+        tests/MNIST.cpp
+        tests/MNIST.h
+        net/layers/Tanh.cpp
+        net/layers/Tanh.h)

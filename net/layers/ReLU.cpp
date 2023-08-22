@@ -16,7 +16,7 @@ float ReLU::f(float x) {
 }
 float ReLU::dfdx(float x) {
     if (x < 0)
-        return 0.0001;
+        return 0;
     else
         return 1;
 }
