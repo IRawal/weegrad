@@ -8,6 +8,8 @@
 #include <cstdlib>
 #include <iostream>
 #include <functional>
+#include <emmintrin.h>
+#include <immintrin.h>
 
 double** elements;
 int rows;
@@ -73,7 +75,6 @@ Matrix* Matrix::randomize() {
     }
     return this;
 }
-// Deprecated (Very slow)
 Matrix* Matrix::broadcast(std::function<double(double)> fn) {
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
@@ -82,11 +83,18 @@ Matrix* Matrix::broadcast(std::function<double(double)> fn) {
     }
     return this;
 }
-
 Matrix* Matrix::scale(double d) {
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
             elements[i][j] = elements[i][j] * d;
+        }
+    }
+    return this;
+}
+Matrix* Matrix::fill(double d) {
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            elements[i][j] = d;
         }
     }
     return this;
@@ -112,6 +120,20 @@ Matrix* Matrix::add(Matrix *m2) {
         for (int j = 0; j < cols; j++) {
             elements[i][j] = elements[i][j] + m2->elements[i][j];
         }
+    }
+    return this;
+}
+/* AVX accelerated addition */
+Matrix* Matrix::add_fast(Matrix *m2) {
+    if (rows != m2->rows || rows != 1 || cols != m2->cols) {
+        printf("invalid dimensions\n");
+        exit(-1);
+    }
+    for (int i = 0; i < cols; i += 2) {
+        __m256d v1 = _mm256_load_pd(elements[0] + i);
+        __m256d v2 = _mm256_load_pd(m2->elements[0] + i);
+        __m256d out = _mm256_add_pd(v1, v2);
+        _mm256_stream_pd(elements[0] + i, out);
     }
     return this;
 }
@@ -143,15 +165,8 @@ double Matrix::sum() {
             sum += elements[i][j];
         }
     }
+    return sum;
 }
-//Matrix* Matrix::activate(ActivationLayer* activationLayer) {
-//    for (int i = 0; i < rows; i++) {
-//        for (int j = 0; j < cols; j++) {
-//            elements[i][j] = activationLayer->f(elements[i][j]);
-//        }
-//    }
-//    return this;
-//}
 Matrix::~Matrix() {
     m_free();
 }

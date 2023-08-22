@@ -5,7 +5,25 @@
 #include "ActivationLayer.h"
 
 Matrix *ActivationLayer::forward(Matrix *in) {
-    return in->copy()->broadcast([this](double d){return f(d);});
+    return activate(in->copy());
 }
+Matrix* ActivationLayer::activate(Matrix* in) {
+    for (int i = 0; i < in->rows; i++) {
+        for (int j = 0; j < in->cols; j++) {
+            in->elements[i][j] = f(in->elements[i][j]);
+        }
+    }
+    return in;
+}
+/*Derivative of activation fn*/
+Matrix* ActivationLayer::dactivate(Matrix* in) {
+    for (int i = 0; i < in->rows; i++) {
+        for (int j = 0; j < in->cols; j++) {
+            in->elements[i][j] = f(in->elements[i][j]);
+        }
+    }
+    return in;
+}
+
 
 

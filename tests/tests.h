@@ -7,6 +7,8 @@
 
 void test_mult();
 void test_dense();
-void addition_test();
+void test_addition();
+void addition_nn_test();
+void test_convergence();
 
 #endif //WEEGRAD_TESTS_H

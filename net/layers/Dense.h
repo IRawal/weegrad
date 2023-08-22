@@ -12,7 +12,7 @@
 class Dense : public Layer {
     public:
         Dense(int inLen, int outLen);
-        Matrix * forward(Matrix *in);
+        Matrix * forward(Matrix *in) override;
         Matrix* weights;
         Matrix* biases;
 };

@@ -44,6 +44,7 @@ Matrix* Net::forward(Matrix *in) {
     }
     return neurons[depth];
 }
+// Stochastic gradient descent
 void Net::train(Matrix **xs, Matrix **ys, int examples, double rate, int epochs) {
     for (int eps = 0; eps < epochs; eps++) {
         Ops::shuffle(xs, ys, examples);
@@ -69,31 +70,24 @@ void Net::step(Matrix *expected, double rate) {
         if (layer->type == LayerType::Dense) {
             Dense* dense = ((Dense *) layer);
 
-            Matrix* neurons_t = neurons[i]->copy()->transpose();
-            Matrix* dcdw = Ops::matmul(dcdb, neurons_t);
 
-            delete neurons_t;
+            Matrix* dcdw = Ops::matmul(dcdb->transpose(), neurons[i]);
+            Matrix* dcdb_t = dcdb->copy()->transpose();
 
-            Matrix* bsum = Ops::rowSum(dcdb);
-
-            dense->weights = dense->weights->subtract(dcdw->scale(rate));
-            dense->biases = dense->biases->subtract(bsum->scale(rate));
+            dense->weights = dense->weights->subtract(dcdw->scale(rate)->transpose());
+            dense->biases = dense->biases->subtract(dcdb_t->scale(rate));
 
             delete dcdw;
-            delete bsum;
+            delete dcdb_t;
 
-            Matrix* weights_t = dense->weights->copy()->transpose();
-            Matrix* old_dcdb = dcdb;
-            dcdb = Ops::matmul(weights_t, dcdb);
-
-            delete old_dcdb;
-            delete weights_t;
+            Matrix* new_dcdb = Ops::matmul(dense->weights, dcdb);
+            delete(dcdb);
+            dcdb = new_dcdb;
         }
         else if (layer->type == LayerType::ActivationFn) {
-            //Matrix* activated = neurons[i].copy()->activate(((ActivationLayer*) layer));
-            Matrix* activated = neurons[i]->copy()->broadcast([&layer](double d){return ((ActivationLayer*) layer)->dfdx(d);});
+            Matrix* activated = ((ActivationLayer *) layer)->dactivate(neurons[i]->copy());
 
-            dcdb->shur(activated);
+            dcdb->transpose()->shur(activated);
 
             delete activated;
         }

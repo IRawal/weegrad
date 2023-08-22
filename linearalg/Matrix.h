@@ -7,7 +7,6 @@
 #ifndef WEEGRAD_MATRIX_H
 
 #define WEEGRAD_MATRIX_H
-
 class Matrix {
     public:
         int rows;
@@ -34,14 +33,17 @@ class Matrix {
 
         Matrix *scale(double d);
 
-        //Matrix* activate(ActivationLayer* activationLayer);
         Matrix *subtract(Matrix *m2);
 
         Matrix *add(Matrix *m2);
 
+        Matrix *add_fast(Matrix *m2);
+
         Matrix *shur(Matrix *m2);
 
         double sum();
+
+        Matrix *fill(double d);
 
         ~Matrix();
 

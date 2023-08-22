@@ -12,7 +12,9 @@ class ActivationLayer : public Layer {
     public:
         virtual double f(double x) = 0;
         virtual double dfdx(double x) = 0;
-        Matrix* forward(Matrix* in);
+        Matrix* forward(Matrix* in) override;
+        Matrix *activate(Matrix *in);
+        Matrix *dactivate(Matrix *in);
 };
 
 

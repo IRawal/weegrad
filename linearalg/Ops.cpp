@@ -7,10 +7,39 @@
 #include <numeric>
 #include <iostream>
 #include <random>
+#include <emmintrin.h>
 
 #include "Ops.h"
 #include "Matrix.h"
 
+Matrix* Ops::matmul_fast(Matrix *m1, Matrix *m2) {
+    if (m1->cols != m2->rows) {
+        printf("Invalid dimensions\n");
+        exit(-1);
+    }
+
+    Matrix* product = new Matrix(m1->rows, m2->cols);
+    const int m1Rows = m1->rows;
+    const int m1Cols = m1->cols;
+    const int m2Cols = m2->cols;
+
+    for (int i = 0; i < m1Rows; ++i) {
+        for (int j = 0; j < m2Cols; ++j) {
+            __m128d accum = _mm_setzero_pd(); // Initialize a vector accumulator
+
+            for (int k = 0; k < m1Cols; k += 2) {
+                __m128d m1Vec = _mm_loadu_pd(&m1->elements[i][k]); // Load 2 doubles from m1
+                __m128d m2Vec = _mm_loadu_pd(&m2->elements[k][j]); // Load 2 doubles from m2
+                accum = _mm_add_pd(accum, _mm_mul_pd(m1Vec, m2Vec)); // Multiply and accumulate
+            }
+
+            double n[2];
+            _mm_storeu_pd(n, accum); // Store the accumulated result back to an array
+            product->elements[i][j] = n[0] + n[1]; // Sum the elements in the array
+        }
+    }
+    return product;
+}
 Matrix* Ops::matmul(Matrix *m1, Matrix *m2) {
     //checking the dimensions of the input matrices
     if (m1->cols != m2->rows) {
