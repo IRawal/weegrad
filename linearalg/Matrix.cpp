@@ -25,7 +25,7 @@ float** Matrix::m_allocate(int r, int c) {
     float** els = static_cast<float **>(malloc(r * sizeof(float *)));
     for (int i = 0; i < r; i++) {
         //els[i] = static_cast<float *>(malloc(c * sizeof(float)));
-        els[i] = static_cast<float *>(aligned_alloc(64, c * (sizeof(float))));
+        els[i] = static_cast<float *>(aligned_alloc(32, c * (sizeof(float))));
     }
     return els;
 }
@@ -166,7 +166,7 @@ Matrix* Matrix::shur_fast(Matrix *m2) {
     }
     for (int i = 0; i < rows; i++) {
         float *v = elements[i];
-        Ops::vec_shur_fast(v, m2->elements[i], cols);
+        Ops::vec_shur_fast(v, m2->elements[i], v, cols);
     }
     return this;
 }

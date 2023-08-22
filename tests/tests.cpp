@@ -106,6 +106,23 @@ void test_addition() {
     m1->print();
     std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(finish-start).count() << "ms\n";
 }
+void test_sum() {
+    Matrix* m1 = new Matrix(1, 101);
+    m1->fill(1);
+    float a[3] = {1.f, 2.f, 3.f};
+    auto start = std::chrono::high_resolution_clock::now();
+    for (int i = 0; i < 100000; i++) {
+        Ops::vec_sum_fast(a, 3);
+    }
+    auto finish = std::chrono::high_resolution_clock::now();
+    std::cout << "Fast took " << std::chrono::duration_cast<std::chrono::milliseconds>(finish-start).count() << "ms\n";
+    start = std::chrono::high_resolution_clock::now();
+    for (int i = 0; i < 100000; i++) {
+        m1->sum();
+    }
+    finish = std::chrono::high_resolution_clock::now();
+    std::cout << "Slow took " << std::chrono::duration_cast<std::chrono::milliseconds>(finish-start).count() << "ms\n";
+}
 void test_convergence() {
     int depth = 5;
     Layer** layers = static_cast<Layer**>(malloc(sizeof(Layer*) * depth));

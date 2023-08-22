@@ -10,5 +10,6 @@ void test_dense();
 void test_addition();
 void addition_nn_test();
 void test_convergence();
+void test_sum();
 
 #endif //WEEGRAD_TESTS_H

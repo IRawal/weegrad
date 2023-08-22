@@ -20,9 +20,9 @@ Matrix* Ops::matmul_fast(Matrix *m1, Matrix *m2) {
     }
     Matrix* product = new Matrix(m1->rows, m2->cols);
     Matrix* m2_t = m2->copy()->transpose();
-    m1->shur_fast(m2_t);
     for (int i = 0; i < m1->rows; i++) {
-
+        float* out = static_cast<float*>(malloc(sizeof(float) * m1->cols));
+        vec_shur_fast(m1->elements[i], m2_t->elements[i], nullptr, m1->cols);
     }
 }
 Matrix* Ops::matmul(Matrix *m1, Matrix *m2) {
@@ -67,17 +67,34 @@ Matrix* Ops::colSum(Matrix *in) {
     return newMat;
 }
 /*Multiply two float vectors using AVX*/
-void Ops::vec_shur_fast(float* v1, float* v2, int len) {
+void Ops::vec_shur_fast(float *v1, float *v2, float *out, int len) {
     int leftover = len % 8;
     for (int j = 0; j < len - leftover; j += 8) {
         __m256 v1_v = _mm256_load_ps(v1 + j);
         __m256 v2_v = _mm256_load_ps(v2 + j);
-        __m256 out = _mm256_mul_ps(v1_v, v2_v);
-        _mm256_stream_ps(v1 + j, out);
+        __m256 out_v = _mm256_mul_ps(v1_v, v2_v);
+        _mm256_stream_ps(out + j, out_v);
     }
     for (int j = len - leftover; j < len; j++) {
-        v1[j] *= v2[j];
+        out[j] = v1[j] * v2[j];
     }
+}
+float Ops::vec_sum_fast(float *v1, int len) {
+    __m256 sum = _mm256_setzero_ps();
+    int leftover = len % 8;
+    for (int j = 0; j < len - leftover; j += 8) {
+        sum = _mm256_add_ps(sum, _mm256_load_ps(v1 + j));
+    }
+    __m256 hsum = _mm256_hadd_ps(sum, sum);
+    hsum = _mm256_hadd_ps(hsum, hsum);
+    hsum = _mm256_hadd_ps(hsum, hsum);
+
+    float result = hsum[0];
+
+    for (int j = len - leftover; j < len; j++) {
+        result += v1[j];
+    }
+    return result;
 }
 /*Shuffles column vectors of length n while retaining same indices for both vectors*/
 void Ops::shuffle(Matrix **m1, Matrix **m2, int n) {

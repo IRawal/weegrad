@@ -17,7 +17,8 @@ class Ops {
         static Matrix *rowSum(Matrix *in);
         static Matrix *colSum(Matrix *in);
         static void shuffle(Matrix **m1, Matrix **m2, int n);
-        static void vec_shur_fast(float* v1, float* v2, int len);
+        static void vec_shur_fast(float *v1, float *v2, float *out, int len);
+        static float vec_sum_fast(float *v1, int len);
 };
 
 
