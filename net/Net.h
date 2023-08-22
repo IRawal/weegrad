@@ -14,8 +14,8 @@ class Net {
     public:
         Net(Layer **layers, int depth);
         Matrix * forward(Matrix *in);
-        void train(Matrix **xs, Matrix **ys, int examples, double rate, int epochs);
-        void step(Matrix *expected, double rate);
+        void train(Matrix **xs, Matrix **ys, int examples, float rate, int epochs);
+        void step(Matrix *expected, float rate);
         Layer** layers;
         Matrix** neurons;
         int depth;

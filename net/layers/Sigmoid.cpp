@@ -10,11 +10,11 @@ Sigmoid::Sigmoid() {
     this->type = LayerType::ActivationFn;
 }
 
-double Sigmoid::f(double x) {
+float Sigmoid::f(float x) {
     return 1 / (1 + exp(-x));
 }
 
-double Sigmoid::dfdx(double x) {
-    double enegx = exp(-x);
+float Sigmoid::dfdx(float x) {
+    float enegx = exp(-x);
     return enegx / pow((1 + enegx), 2);
 }

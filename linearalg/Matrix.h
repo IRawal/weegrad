@@ -11,7 +11,7 @@ class Matrix {
     public:
         int rows;
         int cols;
-        double** elements;
+        float** elements;
 
         Matrix(int rows, int cols);
 
@@ -25,13 +25,13 @@ class Matrix {
 
         Matrix * randomize();
 
-        double** m_allocate(int r, int c);
+        float** m_allocate(int r, int c);
 
-        Matrix * broadcast(std::function<double(double)> fn);
+        Matrix * broadcast(std::function<float(float)> fn);
 
         Matrix * copy();
 
-        Matrix *scale(double d);
+        Matrix *scale(float d);
 
         Matrix *subtract(Matrix *m2);
 
@@ -41,14 +41,14 @@ class Matrix {
 
         Matrix *shur(Matrix *m2);
 
-        double sum();
+        float sum();
 
-        Matrix *fill(double d);
+        Matrix *fill(float d);
 
         ~Matrix();
 
 
-
+    Matrix *shur_fast(Matrix *m2);
 };
 
 

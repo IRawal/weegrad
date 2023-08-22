@@ -24,10 +24,10 @@ Net::Net(Layer** layers, int depth) {
     this->depth = depth;
     neurons = static_cast<Matrix**>(malloc(sizeof(Matrix*) * (depth + 1))); // One output for each layer + input layer
 }
-double loss(Matrix *in, Matrix *expected) {
+float loss(Matrix *in, Matrix *expected) {
     if (in->rows != expected->rows || in->cols != expected->cols)
         exit(-1);
-    double loss = 0;
+    float loss = 0;
     for (int i = 0; i < in->rows; i++) {
         for (int j = 0; j < in->cols; j++) {
             loss += pow(in->elements[i][j] - expected->elements[i][j], 2);
@@ -45,7 +45,7 @@ Matrix* Net::forward(Matrix *in) {
     return neurons[depth];
 }
 // Stochastic gradient descent
-void Net::train(Matrix **xs, Matrix **ys, int examples, double rate, int epochs) {
+void Net::train(Matrix **xs, Matrix **ys, int examples, float rate, int epochs) {
     for (int eps = 0; eps < epochs; eps++) {
         Ops::shuffle(xs, ys, examples);
         for (int i = 0; i < examples; i++) {
@@ -61,7 +61,7 @@ void Net::train(Matrix **xs, Matrix **ys, int examples, double rate, int epochs)
         printf("Epoch: %i\n", eps + 1);
     }
 }
-void Net::step(Matrix *expected, double rate) {
+void Net::step(Matrix *expected, float rate) {
     Matrix* neuron_copy = neurons[depth]->copy();
     Matrix* dcdb = neuron_copy->subtract(expected); // dCost/dOut ~= (y - yhat);
     for (int i = depth - 1; i >= 0; i--) {
@@ -87,7 +87,7 @@ void Net::step(Matrix *expected, double rate) {
         else if (layer->type == LayerType::ActivationFn) {
             Matrix* activated = ((ActivationLayer *) layer)->dactivate(neurons[i]->copy());
 
-            dcdb->transpose()->shur(activated);
+            dcdb->transpose()->shur_fast(activated);
 
             delete activated;
         }

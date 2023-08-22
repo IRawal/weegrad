@@ -8,13 +8,13 @@
 ReLU::ReLU() {
     this->type = LayerType::ActivationFn;
 }
-double ReLU::f(double x) {
+float ReLU::f(float x) {
     if (x < 0)
         return 0;
     else
         return x;
 }
-double ReLU::dfdx(double x) {
+float ReLU::dfdx(float x) {
     if (x < 0)
         return 0.0001;
     else

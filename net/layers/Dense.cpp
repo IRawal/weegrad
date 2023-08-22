@@ -15,14 +15,14 @@ Dense::Dense(int inLen, int outLen) {
     weights = new Matrix(inLen, outLen);
     biases = new Matrix(1, outLen);
 
-    std::normal_distribution dist = std::normal_distribution<double>(0, sqrt(2.0 / inLen));
+    std::normal_distribution dist = std::normal_distribution<float>(0, sqrtf32(2.0f / inLen));
     std::random_device rd{};
     std::mt19937 gen{rd()};
 
-    weights->broadcast([&dist, &gen](double d) {return dist(gen);});
+    weights->broadcast([&dist, &gen](float d) {return dist(gen);});
 }
 Matrix* Dense::forward(Matrix* in) {
-    Matrix* out = Ops::matmul_fast(in, weights);
-    out->add(biases);
+    Matrix* out = Ops::matmul(in, weights);
+    out->add_fast(biases);
     return out;
 }

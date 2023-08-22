@@ -95,8 +95,8 @@ void addition_nn_test() {
     net.forward(input)->print();
 }
 void test_addition() {
-    Matrix* m1 = new Matrix(1, 100);
-    Matrix* m2 = new Matrix(1, 100);
+    Matrix* m1 = new Matrix(1, 1000);
+    Matrix* m2 = new Matrix(1, 1000);
     m2->fill(1);
     auto start = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < 100000; i++) {

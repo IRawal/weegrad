@@ -8,6 +8,7 @@
 #include <iostream>
 #include <random>
 #include <emmintrin.h>
+#include <immintrin.h>
 
 #include "Ops.h"
 #include "Matrix.h"
@@ -17,28 +18,12 @@ Matrix* Ops::matmul_fast(Matrix *m1, Matrix *m2) {
         printf("Invalid dimensions\n");
         exit(-1);
     }
-
     Matrix* product = new Matrix(m1->rows, m2->cols);
-    const int m1Rows = m1->rows;
-    const int m1Cols = m1->cols;
-    const int m2Cols = m2->cols;
+    Matrix* m2_t = m2->copy()->transpose();
+    m1->shur_fast(m2_t);
+    for (int i = 0; i < m1->rows; i++) {
 
-    for (int i = 0; i < m1Rows; ++i) {
-        for (int j = 0; j < m2Cols; ++j) {
-            __m128d accum = _mm_setzero_pd(); // Initialize a vector accumulator
-
-            for (int k = 0; k < m1Cols; k += 2) {
-                __m128d m1Vec = _mm_loadu_pd(&m1->elements[i][k]); // Load 2 doubles from m1
-                __m128d m2Vec = _mm_loadu_pd(&m2->elements[k][j]); // Load 2 doubles from m2
-                accum = _mm_add_pd(accum, _mm_mul_pd(m1Vec, m2Vec)); // Multiply and accumulate
-            }
-
-            double n[2];
-            _mm_storeu_pd(n, accum); // Store the accumulated result back to an array
-            product->elements[i][j] = n[0] + n[1]; // Sum the elements in the array
-        }
     }
-    return product;
 }
 Matrix* Ops::matmul(Matrix *m1, Matrix *m2) {
     //checking the dimensions of the input matrices
@@ -50,7 +35,7 @@ Matrix* Ops::matmul(Matrix *m1, Matrix *m2) {
 
     for (int i = 0; i < m1->rows; i++) {
         for (int j = 0; j < m2->cols; j++) {
-            double n = 0;
+            float n = 0;
             for (int k = 0; k < m1->cols; k++) {
                 n += m1->elements[i][k] * m2->elements[k][j];
             }
@@ -62,7 +47,7 @@ Matrix* Ops::matmul(Matrix *m1, Matrix *m2) {
 Matrix* Ops::rowSum(Matrix *in) {
     Matrix* newMat = new Matrix(in->rows, 1);
     for (int i = 0; i < in->rows; i++) {
-        double sum = 0;
+        float sum = 0;
         for (int j = 0; j < in->cols; j++) {
             sum += in->elements[i][j];
         }
@@ -73,13 +58,26 @@ Matrix* Ops::rowSum(Matrix *in) {
 Matrix* Ops::colSum(Matrix *in) {
     Matrix* newMat = new Matrix(1, in->cols);
     for (int i = 0; i < in->cols; i++) {
-        double sum = 0;
+        float sum = 0;
         for (int j = 0; j < in->rows; j++) {
             sum += in->elements[j][i];
         }
         newMat->elements[0][i] = sum;
     }
     return newMat;
+}
+/*Multiply two float vectors using AVX*/
+void Ops::vec_shur_fast(float* v1, float* v2, int len) {
+    int leftover = len % 8;
+    for (int j = 0; j < len - leftover; j += 8) {
+        __m256 v1_v = _mm256_load_ps(v1 + j);
+        __m256 v2_v = _mm256_load_ps(v2 + j);
+        __m256 out = _mm256_mul_ps(v1_v, v2_v);
+        _mm256_stream_ps(v1 + j, out);
+    }
+    for (int j = len - leftover; j < len; j++) {
+        v1[j] *= v2[j];
+    }
 }
 /*Shuffles column vectors of length n while retaining same indices for both vectors*/
 void Ops::shuffle(Matrix **m1, Matrix **m2, int n) {

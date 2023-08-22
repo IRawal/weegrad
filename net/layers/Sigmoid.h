@@ -11,8 +11,8 @@
 class Sigmoid : public ActivationLayer {
     public:
         Sigmoid();
-        double f(double x);
-        double dfdx(double x);
+        float f(float x);
+        float dfdx(float x);
 };
 
 
