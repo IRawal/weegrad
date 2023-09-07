@@ -13,6 +13,6 @@
 
 #include "tests/tests.h"
 int main() {
-    test_nn_mult();
+    addition_nn_test();
 }
 

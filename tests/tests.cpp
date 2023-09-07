@@ -41,30 +41,30 @@ void addition_nn_test() {
     Matrix** xs = static_cast<Matrix**>(malloc(sizeof(Matrix*) * examples));
     Matrix** ys = static_cast<Matrix**>(malloc(sizeof(Matrix*) * examples));
 
-    xs[0] = new Matrix(2, 1);
+    xs[0] = new Matrix(1, 2);
     xs[0]->elements[0][0] = 0.1;
-    xs[0]->elements[1][0] = 0.2;
-    xs[1] = new Matrix(2, 1);
+    xs[0]->elements[0][1] = 0.2;
+    xs[1] = new Matrix(1, 2);
     xs[1]->elements[0][0] = 0.5;
-    xs[1]->elements[1][0] = 0.7;
-    xs[2] = new Matrix(2, 1);
+    xs[1]->elements[0][1] = 0.7;
+    xs[2] = new Matrix(1, 2);
     xs[2]->elements[0][0] = 0.8;
-    xs[2]->elements[1][0] = 0.4;
-    xs[3] = new Matrix(2, 1);
+    xs[2]->elements[0][1] = 0.4;
+    xs[3] = new Matrix(1, 2);
     xs[3]->elements[0][0] = 0.11;
-    xs[3]->elements[1][0] = 0.14;
-    xs[4] = new Matrix(2, 1);
+    xs[3]->elements[0][1] = 0.14;
+    xs[4] = new Matrix(1, 2);
     xs[4]->elements[0][0] = 0.6;
-    xs[4]->elements[1][0] = 0.23;
-    xs[5] = new Matrix(2, 1);
+    xs[4]->elements[0][1] = 0.23;
+    xs[5] = new Matrix(1, 2);
     xs[5]->elements[0][0] = 0.3;
-    xs[5]->elements[1][0] = 0.63;
-    xs[6] = new Matrix(2, 1);
+    xs[5]->elements[0][1] = 0.63;
+    xs[6] = new Matrix(1, 2);
     xs[6]->elements[0][0] = 0.5;
-    xs[6]->elements[1][0] = 0.29;
-    xs[7] = new Matrix(2, 1);
+    xs[6]->elements[0][1] = 0.29;
+    xs[7] = new Matrix(1, 2);
     xs[7]->elements[0][0] = 0.1;
-    xs[7]->elements[1][0] = 0.25;
+    xs[7]->elements[0][1] = 0.25;
 
     ys[0] = new Matrix(1, 1);
     ys[0]->elements[0][0] = 0.1+0.2;
@@ -83,11 +83,11 @@ void addition_nn_test() {
     ys[7] = new Matrix(1, 1);
     ys[7]->elements[0][0] = 0.1+0.25;
 
-    net.train(xs, ys, examples, 0.01, 100000);
+    net.train(xs, ys, examples, 0.1, 100000);
 
-    Matrix* input = new Matrix(2, 1);
+    Matrix* input = new Matrix(1, 2);
     input->elements[0][0] = 1.11;
-    input->elements[1][0] = 0.14;
+    input->elements[0][1] = 0.14;
 
     printf("%s\n", "Input:" );
     input->print();
@@ -176,7 +176,7 @@ void test_dense() {
     layer.forward(&vec)->print();
 }
 void test_nn_mult() {
-    int depth = 7;
+    int depth = 9;
     Layer** layers = static_cast<Layer**>(malloc(sizeof(Layer*) * depth));
 
     layers[0] = new Dense(2, 2);
@@ -185,11 +185,13 @@ void test_nn_mult() {
     layers[3] = new Tanh();
     layers[4] = new Dense(5, 5);
     layers[5] = new Tanh();
-    layers[6] = new Dense(5, 1);
+    layers[6] = new Dense(5, 5);
+    layers[7] = new Tanh();
+    layers[8] = new Dense(5, 1);
 
     Net net = Net(layers, depth);
 
-    int examples = 8;
+    int examples = 2;
 
     Matrix** xs = static_cast<Matrix**>(malloc(sizeof(Matrix*) * examples));
     Matrix** ys = static_cast<Matrix**>(malloc(sizeof(Matrix*) * examples));
@@ -206,18 +208,6 @@ void test_nn_mult() {
     xs[3] = new Matrix(1, 2);
     xs[3]->elements[0][0] = 0.11;
     xs[3]->elements[0][1] = 0.14;
-    xs[4] = new Matrix(1, 2);
-    xs[4]->elements[0][0] = 0.6;
-    xs[4]->elements[0][1] = 0.23;
-    xs[5] = new Matrix(1, 2);
-    xs[5]->elements[0][0] = 0.3;
-    xs[5]->elements[0][1] = 0.63;
-    xs[6] = new Matrix(1, 2);
-    xs[6]->elements[0][0] = 0.5;
-    xs[6]->elements[0][1] = 0.29;
-    xs[7] = new Matrix(1, 2);
-    xs[7]->elements[0][0] = 0.1;
-    xs[7]->elements[0][1] = 0.25;
 
     ys[0] = new Matrix(1, 1);
     ys[0]->elements[0][0] = 0.1*0.2;
@@ -227,37 +217,11 @@ void test_nn_mult() {
     ys[2]->elements[0][0] = 0.8*0.4;
     ys[3] = new Matrix(1, 1);
     ys[3]->elements[0][0] = 0.11*0.14;
-    ys[4] = new Matrix(1, 1);
-    ys[4]->elements[0][0] = 0.6*0.23;
-    ys[5] = new Matrix(1, 1);
-    ys[5]->elements[0][0] = 0.3*0.63;
-    ys[6] = new Matrix(1, 1);
-    ys[6]->elements[0][0] = 0.5*0.29;
-    ys[7] = new Matrix(1, 1);
-    ys[7]->elements[0][0] = 0.1*0.25;
 
 
-    net.train(xs, ys, examples, 0.001, 30000);
-
-    Matrix** tests = static_cast<Matrix**>(malloc(sizeof(Matrix*) * examples));
-
-    tests[0] = new Matrix(1, 2);
-    tests[0]->elements[0][0] = 0.2;
-    tests[0]->elements[0][1] = 0.2;
-
-    tests[1] = new Matrix(1, 2);
-    tests[1]->elements[0][0] = 0.6;
-    tests[1]->elements[0][1] = 0.3;
-
-    tests[2] = new Matrix(1, 2);
-    tests[2]->elements[0][0] = 0.21;
-    tests[2]->elements[0][1] = 0.34;
-
-    tests[3] = new Matrix(1, 2);
-    tests[3]->elements[0][0] = 0.4;
-    tests[3]->elements[0][1] = 0.8;
+    net.train(xs, ys, examples, 0.001, 100000);
 
     for (int i = 0; i < examples; i++) {
-        net.forward(tests[i])->print();
+        net.forward(xs[i])->print();
     }
 }

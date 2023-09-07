@@ -15,14 +15,11 @@
 #include <utility>
 #include <vector>
 
-Layer** layers;
-Matrix* neurons;
-int depth;
-
 Net::Net(Layer** layers, int depth) {
     this->layers = layers;
     this->depth = depth;
     neurons = static_cast<Matrix**>(malloc(sizeof(Matrix*) * (depth + 1))); // One output for each layer + input layer
+
 }
 float loss(Matrix *in, Matrix *expected) {
     if (in->rows != expected->rows || in->cols != expected->cols)
@@ -61,6 +58,26 @@ void Net::train(Matrix **xs, Matrix **ys, int examples, float rate, int epochs) 
         printf("Epoch: %i\n", eps + 1);
     }
 }
+std::vector<float *> * Net::get_params() {
+    auto params = new std::vector<float*>();
+    for (int i = 0; i < depth; i++) {
+        Layer* layer = layers[i];
+        if (layer->type != LayerType::Dense)
+            continue;
+        auto dense = (Dense*) layer;
+        for (int k = 0; k < dense->weights->rows; k++) {
+            for (int j = 0; j < dense->weights->cols; j++) {
+                params->push_back(dense->weights->elements[k] + j);
+            }
+        }
+        for (int k = 0; k < dense->biases->rows; k++) {
+            for (int j = 0; j < dense->biases->cols; j++) {
+                params->push_back(dense->biases->elements[k] + j);
+            }
+        }
+    }
+    return params;
+}
 void Net::step(Matrix *expected, float rate) {
     Matrix* neuron_copy = neurons[depth]->copy();
     Matrix* dcdb = neuron_copy->subtract(expected); // dCost/dOut ~= (y - yhat);
@@ -70,24 +87,23 @@ void Net::step(Matrix *expected, float rate) {
         if (layer->type == LayerType::Dense) {
             Dense* dense = ((Dense *) layer);
 
+            Matrix* dcdw = Ops::matmul(neurons[i]->transpose(), dcdb);
+            Matrix* dcdb_t = dcdb->copy();
 
-            Matrix* dcdw = Ops::matmul(dcdb->transpose(), neurons[i]);
-            Matrix* dcdb_t = dcdb->copy()->transpose();
-
-            dense->weights = dense->weights->subtract(dcdw->scale(rate)->transpose());
+            dense->weights = dense->weights->subtract(dcdw->scale(rate));
             dense->biases = dense->biases->subtract(dcdb_t->scale(rate));
 
             delete dcdw;
             delete dcdb_t;
 
-            Matrix* new_dcdb = Ops::matmul(dense->weights, dcdb);
-            delete(dcdb);
+            Matrix* new_dcdb = Ops::matmul(dcdb, dense->weights->copy()->transpose());
+            delete dcdb;
             dcdb = new_dcdb;
         }
         else if (layer->type == LayerType::ActivationFn) {
             Matrix* activated = ((ActivationLayer *) layer)->dactivate(neurons[i]->copy());
 
-            dcdb->transpose()->shur_fast(activated);
+            dcdb->shur_fast(activated);
 
             delete activated;
         }
