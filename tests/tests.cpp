@@ -83,7 +83,7 @@ void addition_nn_test() {
     ys[7] = new Matrix(1, 1);
     ys[7]->elements[0][0] = 0.1+0.25;
 
-    net.train(xs, ys, examples, 0.1, 100000);
+    net.train(xs, ys, examples, 0.001, 100000);
 
     Matrix* input = new Matrix(1, 2);
     input->elements[0][0] = 1.11;

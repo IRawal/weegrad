@@ -19,7 +19,22 @@ Net::Net(Layer** layers, int depth) {
     this->layers = layers;
     this->depth = depth;
     neurons = static_cast<Matrix**>(malloc(sizeof(Matrix*) * (depth + 1))); // One output for each layer + input layer
-
+    for (int i = 0; i < depth; i++) {
+        Layer* layer = layers[i];
+        if (layer->type != LayerType::Dense)
+            continue;
+        auto dense = (Dense*) layer;
+        for (int k = 0; k < dense->weights->rows; k++) {
+            for (int j = 0; j < dense->weights->cols; j++) {
+                this->param_count++;
+            }
+        }
+        for (int k = 0; k < dense->biases->rows; k++) {
+            for (int j = 0; j < dense->biases->cols; j++) {
+                this->param_count++;
+            }
+        }
+    }
 }
 float loss(Matrix *in, Matrix *expected) {
     if (in->rows != expected->rows || in->cols != expected->cols)
@@ -58,8 +73,9 @@ void Net::train(Matrix **xs, Matrix **ys, int examples, float rate, int epochs) 
         printf("Epoch: %i\n", eps + 1);
     }
 }
-std::vector<float *> * Net::get_params() {
-    auto params = new std::vector<float*>();
+float** Net::get_params() {
+    auto params = static_cast<float**>(malloc(sizeof(float*) * this->param_count));
+    int param_ind = 0;
     for (int i = 0; i < depth; i++) {
         Layer* layer = layers[i];
         if (layer->type != LayerType::Dense)
@@ -67,12 +83,14 @@ std::vector<float *> * Net::get_params() {
         auto dense = (Dense*) layer;
         for (int k = 0; k < dense->weights->rows; k++) {
             for (int j = 0; j < dense->weights->cols; j++) {
-                params->push_back(dense->weights->elements[k] + j);
+                params[param_ind] = dense->weights->elements[k] + j;
+                param_ind++;
             }
         }
         for (int k = 0; k < dense->biases->rows; k++) {
             for (int j = 0; j < dense->biases->cols; j++) {
-                params->push_back(dense->biases->elements[k] + j);
+                params[param_ind] = dense->biases->elements[k] + j;
+                param_ind++;
             }
         }
     }

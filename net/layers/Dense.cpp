@@ -20,6 +20,7 @@ Dense::Dense(int inLen, int outLen) {
     std::mt19937 gen{rd()};
 
     weights->broadcast([&dist, &gen](float d) {return dist(gen);});
+    biases->broadcast([&dist, &gen](float d) {return dist(gen);});
 }
 Matrix* Dense::forward(Matrix* in) {
     Matrix* out = Ops::matmul(in, weights);

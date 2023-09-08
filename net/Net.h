@@ -16,10 +16,11 @@ class Net {
         Matrix * forward(Matrix *in);
         void train(Matrix **xs, Matrix **ys, int examples, float rate, int epochs);
         void step(Matrix *expected, float rate);
-        std::vector<float *> * get_params();
+        float ** get_params();
         Layer** layers;
         Matrix** neurons;
         int depth;
+        int param_count;
 };
 
 
